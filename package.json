@@ -1,0 +1,13 @@
+{
+  "name": "pixiv-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Self-hosted pixiv proxy for Pixive: app-api/oauth pass-through + i.pximg.net image reverse proxy in one service",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node app.mjs"
+  }
+}
