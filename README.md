@@ -29,6 +29,15 @@ PORT=8080 node app.mjs
 
 ## 部署
 
+> **⚠️ 中国大陆网络必读（2026-10 实测教训，部署前先看，能省一整夜）**
+>
+> 1. **不要用 Cloudflare Workers 的 `*.workers.dev` 默认域名**：该域名已被国内运营商在 TCP 层阻断（DNS 正常、连接直接超时）。Workers 本身没问题，但必须**绑定自己的自定义域名**才能国内访问。
+> 2. **服务必须跑在境外节点**（境外服务器或海外 Serverless 区域）：国内服务器/国内 CDN 节点到 `app-api.pixiv.net` 和 `i.pximg.net` 全部超时（国内出口与家宽同一道墙）。
+> 3. **EdgeOne Pages 默认域名**（`*.edgeone.cool` / `*.edgeone.dev`）对含中国大陆加速区域的项目返回 401（预览域合规 token 机制，控制台无开关），Pixive 填不了，必须绑自定义域名（海外节点项目绑域名免 ICP 备案）。
+> 4. **其他平台门槛**：Render 免费档需绑 Visa/万事达才能创建服务，且闲置 15 分钟休眠、冷启动 30 秒以上；Vercel 新注册需人工审批；Zeabur 常驻服务需 $5/月 Dev 方案（前 14 天免费）。
+> 5. **国内可达的稳妥路径**：自有境外 VPS（首选——如 Oracle Cloud Always Free，ARM 4核24G / 10TB 月流量 / 真永久免费，东京或首尔节点，`app.mjs` 直接扔 + systemd 守护）；或任意支持 Node 的境外平台；或买域名绑 Cloudflare 自定义域名。
+> 6. **本仓库源码不含任何密钥**（仅上游目标域名），可安全公开；如需 HTTPS 但没域名，可用免费 DDNS（DuckDNS / desec.io）+ Let's Encrypt。
+
 仓库内含**两个实现**，功能完全一致，按平台选一个用：
 
 | 文件 | 运行方式 | 适合平台 |
@@ -36,7 +45,7 @@ PORT=8080 node app.mjs
 | `app.mjs` | Node HTTP 服务（监听 `PORT`，绑定 `0.0.0.0`） | Render / Fly.io / Railway / 自有服务器 |
 | `worker.js` + `wrangler.toml` | Cloudflare Workers handler | Cloudflare Workers（免费额度足够个人使用） |
 
-### 部署到 Cloudflare Workers（推荐，免费）
+### 部署到 Cloudflare Workers（免费；国内用户必须绑自定义域名，见上文警告 1）
 
 无需本地工具链，网页面板一键导入：
 
